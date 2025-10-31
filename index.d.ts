@@ -14,4 +14,8 @@ declare module 'node-mac-icloud-keyvalue' {
   export function setValue<T extends keyof TypeMap>(type: T, key: string, value: TypeMap[T]);
 
   export function removeValue(key: string): void;
+
+  export function getDocumentDirectoryPath(): string;
+
+  export function getiCloudDirectoryPath(): string;
 }
