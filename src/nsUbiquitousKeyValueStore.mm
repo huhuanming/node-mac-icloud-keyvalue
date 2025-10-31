@@ -17,6 +17,29 @@ NSString *ToNSString(const std::string &str) {
   return [NSString stringWithUTF8String:str.c_str()];
 }
 
+// Returns the document directory path from NSFileManager.
+Napi::String GetDocumentDirectoryPath(const Napi::CallbackInfo &info) {
+  Napi::Env env = info.Env();
+  NSFileManager *fileManager = [NSFileManager defaultManager];
+  NSArray *paths = [fileManager URLsForDirectory:NSDocumentDirectory 
+                                       inDomains:NSUserDomainMask];
+  NSURL *documentsURL = [paths firstObject];
+  NSString *path = [documentsURL path];
+  return Napi::String::New(env, std::string([path UTF8String]));
+}
+
+// Returns the iCloud directory path from NSFileManager.
+Napi::String GetiCloudDirectoryPath(const Napi::CallbackInfo &info) {
+  Napi::Env env = info.Env();
+  NSFileManager *fileManager = [NSFileManager defaultManager];
+  NSURL *iCloudURL = [fileManager URLForUbiquityContainerIdentifier:nil];
+  if (iCloudURL) {
+    NSString *path = [iCloudURL path];
+    return Napi::String::New(env, std::string([path UTF8String]));
+  }
+  return Napi::String::New(env, "");
+}
+
 // Converts a NSArray to a Napi::Array.
 Napi::Array NSArrayToNapiArray(Napi::Env env, NSArray *array) {
   if (!array)
@@ -245,7 +268,10 @@ Napi::Object Init(Napi::Env env, Napi::Object exports) {
               Napi::Function::New(env, SetValue));
   exports.Set(Napi::String::New(env, "removeValue"),
               Napi::Function::New(env, RemoveValue));
-
+  exports.Set(Napi::String::New(env, "getDocumentDirectoryPath"),
+              Napi::Function::New(env, GetDocumentDirectoryPath));
+  exports.Set(Napi::String::New(env, "getiCloudDirectoryPath"),
+              Napi::Function::New(env, GetiCloudDirectoryPath));
   return exports;
 }
 

@@ -41,9 +41,19 @@ function removeValue(key) {
   return nsUbiquitousKeyValueStore.removeValue.call(this, key);
 }
 
+function getDocumentDirectoryPath() {
+  return nsUbiquitousKeyValueStore.getDocumentDirectoryPath.call(this);
+}
+
+function getiCloudDirectoryPath() {
+  return nsUbiquitousKeyValueStore.getiCloudDirectoryPath.call(this);
+}
+
 module.exports = {
   getAllValues,
   getValue,
   setValue,
   removeValue,
+  getDocumentDirectoryPath,
+  getiCloudDirectoryPath,
 };
